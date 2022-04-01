@@ -1,0 +1,46 @@
+#!/usr/bin/env ruby
+
+# frozen_string_literal: true
+
+output_dir = "#{Dir.home}/.layers_scripts"
+`mkdir -p #{output_dir} `
+
+layers = File.readlines("#{Dir.home}/.layers").map { |line| line.strip.split(/\s*,\s*/) }
+
+layers.each_with_index do |apps, layer_num|
+  # clean up any previous compiled content
+  `rm -f #{output_dir}/layer_#{layer_num}_*_compiled`
+
+  apps.each_with_index do |app, app_num|
+    raw_content_name = "#{output_dir}/layer_#{layer_num}_app_#{app_num}"
+    compiled_content_name = "#{raw_content_name}_compiled"
+
+    File.open(raw_content_name, 'w') do |f|
+      f.print %(
+        on is_running(appName)
+            tell application "System Events" to (name of processes) contains appName
+        end is_running
+
+        set r to is_running(#{app.inspect})
+
+        if r then
+          tell application #{app.inspect}
+            activate
+            set wList to every window whose visible is true
+            repeat with appWindow in wList
+              set index of appWindow to 1
+            end repeat
+          end tell
+        end if
+      )
+    end
+
+    `osacompile -x -o "#{compiled_content_name}" "#{raw_content_name}"`
+  end
+end
+
+puts 'Add keyboard shortcuts for the following:'
+
+layers.each_with_index do |_, layer_num|
+  puts "ls #{output_dir}/layer_#{layer_num}_*_compiled | xargs -L 1 -P 8 osascript"
+end
