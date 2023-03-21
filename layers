@@ -26,7 +26,7 @@ layers.each_with_index do |apps, layer_num|
         if r then
           tell application #{app.inspect}
             activate
-            set wList to every window whose visible is true
+            set wList to reverse of every window whose visible is true
             repeat with appWindow in wList
               set index of appWindow to 1
             end repeat
