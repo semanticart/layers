@@ -33,9 +33,5 @@ Read the source and maybe [check out this blog post for more context][blog].
 
 By default, we use `-P 8` in the `xargs` keybinding to parallelize focussing apps. For layers where a deterministic app order is preferred, swap the `8` to a `1`.
 
-## How can I preserve window focus order within a given app?
-
-You can't yet. We focus each window for an app individually and the order is not currently deterministic.
-
 [Spaces]: https://support.apple.com/guide/mac-help/work-in-multiple-spaces-mh14112/mac
 [blog]: https://blog.semanticart.com/2022/04/01/layers/
