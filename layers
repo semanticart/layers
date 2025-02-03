@@ -24,12 +24,10 @@ layers.each_with_index do |apps, layer_num|
         set r to is_running(#{app.inspect})
 
         if r then
-          tell application #{app.inspect}
-            activate
-            set wList to reverse of every window whose visible is true
-            repeat with appWindow in wList
-              set index of appWindow to 1
-            end repeat
+          tell application "System Events"
+            tell process #{app.inspect}
+              set frontmost to true
+            end tell
           end tell
         end if
       )
